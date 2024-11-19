@@ -42,7 +42,7 @@ INFO:     Uvicorn running on http://localhost:8096 (Press CTRL+C to quit)
 ```
 
 Now open another terminal and call the service. We already provide a sample request
-in [example-req.json](./example-req.json)
+in [example-req.json](./example-req.json), and a respective `make submit-request` target.
 
 ```
 % make submit-request
@@ -118,8 +118,8 @@ To support discover and automatic adaptation to what a service expects
 as well as produces, we need to properly define the "shape" of the
 expected request and the produced response.
 
-In this implementation we take advantage of the power the [Pydantic](https://docs.pydantic.dev/latest/)
-library.
+In this implementation we take advantage of the power of the
+[Pydantic](https://docs.pydantic.dev/latest/) library.
 
 ```
 class ModeE(StrEnum):
@@ -144,7 +144,7 @@ class Response(SchemaModel):
 ```
 
 > Please note that we define a `SCHEMA` class var for every dataclass to be used in the
-JSON schema we will need when registering this service with IVCAP
+JSON schema we will need to uniquely identify when registering this service with IVCAP.
 
 
 #### The main entry point
@@ -168,7 +168,7 @@ def healtz():
     return {"version": os.environ.get("VERSION", "???")}
 ```
 
-To test the service, first run `make install` (ideally within a `venv` or `conda` environment) beforehand to install the necessary dependencies. Then `make run` will start the service listing on [http://0.0.0.0:8080](http://0.0.0.0:8080).
+To test the service, first configure your environment as described above in [Gettingg Started](#getting-started) Then `make run` will start the service listing on [http://localhost:8096](http://localhost:8096).
 
 ### [ivcap.py](./ivcap.py) <a name="ivcap.py"></a>
 
@@ -195,7 +195,9 @@ service description.
 This file contains a few helper functions and classes which hopefully helps
 in more systematically define different aspects of a service as well as
 then automatically generate additional "artifacts" needed to deploy the service
-in different contexts
+in different contexts. It is entirely independent of this particular service implementation.
+We may turn that into a small library package, but the main point of this repo is to
+minimise the dependences on IVCAP - which is pretty much limited to [ivcap.py](./ivcap.py).
 
 ### [Dockerfile](./Dockerfile) <a name="dockerfile"></a>
 
@@ -206,6 +208,7 @@ the `make docker-publish` target will upload it to IVCAP.
 To test the created docker package, run `make docker-run`:
 
 ```
+% make docker-run
 docker run -it \
                 -p 8096:8080 \
                 --user "502:20" \
