@@ -15,7 +15,7 @@ carried in the request, or stored in IVCAP's Datafabric.
 * [Implementation](#implementation)
 * [Deployment](#deploying-deployment)
 
-## Getting Started <a name="#getting-started"></a>
+## Getting Started <a name="getting-started"></a>
 
 First, we need to setup a Python environment. We are using `conda`, but `venv` is
 also a widely used alternative
@@ -168,7 +168,7 @@ def healtz():
     return {"version": os.environ.get("VERSION", "???")}
 ```
 
-To test the service, first configure your environment as described above in [Gettingg Started](#getting-started) Then `make run` will start the service listing on [http://localhost:8096](http://localhost:8096).
+To test the service, first configure your environment as described above in [Getting Started](#getting-started) Then `make run` will start the service listing on [http://localhost:8096](http://localhost:8096).
 
 ### [ivcap.py](./ivcap.py) <a name="ivcap.py"></a>
 
