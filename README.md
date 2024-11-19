@@ -197,4 +197,26 @@ This file describes a simple configuration for building a docker image for
 this service. The make target `make docker-build` will build the image, and
 the `make docker-publish` target will upload it to IVCAP.
 
+To test the created docker package, run `make docker-run`:
+
+```
+docker run -it \
+                -p 8096:8080 \
+                --user "502:20" \
+                --platform=linux/amd64 \
+                --rm \
+                pairwise_sequence_alignment:latest
+INFO     Pairwise sequence alignment - |f097e6d|2024-11-19T14:59+11:00
+INFO     Using path lambda.py
+INFO     Resolved absolute path /app/lambda.py
+...
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+```
+
+And as mentioned above, you can send a request to this service with the `make submit-request` target.
+
 ## Deploying <a name="deploying"></a>
+
+Coming soon ...
