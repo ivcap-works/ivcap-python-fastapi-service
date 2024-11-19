@@ -1,4 +1,4 @@
-# IVCAP "Lambda" Service Demo
+# IVCAP "FastAPI" Service Demo
 
 This repo template contains a very simplistic implementation of a
 pairwise sequence alignment service based on the respective implementation in
