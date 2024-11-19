@@ -28,7 +28,7 @@ run:
 		${PROJECT_DIR}/run.sh
 
 submit-request:
-	curl -X POST -H "Content-Type: application/json" -d @${PROJECT_DIR}/example-req.json ${SERVICE_URL}
+	curl -i -X POST -H "Content-Type: application/json" -d @${PROJECT_DIR}/example-req.json ${SERVICE_URL}
 
 print-ivcap-service-description:
 	curl ${SERVICE_URL}/ivcap_service_description | jq
@@ -38,7 +38,7 @@ install:
 
 docker-run: #docker-build
 	docker run -it \
-		-p 8080:8080 \
+		-p ${PORT}:8080 \
 		--user ${DOCKER_USER} \
 		--platform=${TARGET_PLATFORM} \
 		--rm \

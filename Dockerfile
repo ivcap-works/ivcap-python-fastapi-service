@@ -13,6 +13,6 @@ ARG VERSION ???
 ENV VERSION=$VERSION
 
 # Command to run
-ENV HOST=localhost
+ENV HOST=0.0.0.0
 ENV PORT=8080
 ENTRYPOINT ["./run.sh"]

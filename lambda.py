@@ -1,4 +1,4 @@
-from typing import ClassVar, Dict, List
+from typing import ClassVar, List
 from fastapi import FastAPI
 from pydantic import Field
 from signal import signal, SIGTERM
@@ -25,7 +25,6 @@ We refer to Durbin et al. [Durbin1998] for in-depth information on sequence alig
 This service is essentially a thin wrapper over the "pairwise sequence alignment' implementation
 found in the [BioPython](https://biopython.org/) package.
 """
-
 
 app = FastAPI(
     title=title,
@@ -56,8 +55,8 @@ class Request(SchemaModel):
     match_score: float = Field(1.000000, description="Some decription on what a 'match_score' means")
     mismatch_score: float = Field(0.000000, description="Some decription on what a 'mismatch_score' means")
 
-class Result(SchemaModel):
-    SCHEMA: ClassVar[str] = "urn:sd.test:schema.fastapi-test.result.1"
+class Response(SchemaModel):
+    SCHEMA: ClassVar[str] = "urn:sd.test:schema.fastapi-test.response.1"
     target: str = Field(description="The target sequence as a string", examples="GAACT")
     query: str = Field(description="The sequence to align as a string", examples="GAT")
     alignments: List[List[List[List[int]]]] = Field(description="a list of alignments")
@@ -68,17 +67,17 @@ Service = IVCAPService(
     description=description,
     controller=IVCAPRestService(
         request=Request,
-        response=Result,
+        response=Response,
     ),
 )
 
 @app.post("/")
-def root(req: Request) -> Result:
+def root(req: Request) -> Response:
     p = req.model_dump(exclude=["target", "query", "aspect_schema"])
     aligner = Align.PairwiseAligner(**p)
     r = aligner.align(req.target, req.query)
     alignments=[a.aligned.tolist() for a in r]
-    res = Result(target=req.target, query=req.query, alignments=alignments, score=r.score)
+    res = Response(target=req.target, query=req.query, alignments=alignments, score=r.score)
     return res
 
 @app.get("/ivcap_service_description")

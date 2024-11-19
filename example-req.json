@@ -1,4 +1,5 @@
 {
+  "$schema": "urn:sd.test:schema.fastapi-test.request.1",
   "target": "GAAT",
   "query": "GAT"
 }
