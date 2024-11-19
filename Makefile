@@ -1,7 +1,7 @@
 SERVICE_NAME=pairwise-sequence-alignment
 SERVICE_TITLE=Pairwise sequence alignment
 
-SERVICE_FILE=lambda.py
+SERVICE_FILE=service.py
 SERVICE_ID:=urn:ivcap:service:$(shell python3 -c 'import uuid; print(uuid.uuid5(uuid.NAMESPACE_DNS, \
         "${PROVIDER_NAME}" + "${SERVICE_CONTAINER_NAME}"));')
 
@@ -31,7 +31,7 @@ submit-request:
 	curl -i -X POST -H "Content-Type: application/json" -d @${PROJECT_DIR}/example-req.json ${SERVICE_URL}
 
 print-ivcap-service-description:
-	curl ${SERVICE_URL}/ivcap_service_description | jq
+	python ivcap.py
 
 install:
 	pip install -r requirements.txt

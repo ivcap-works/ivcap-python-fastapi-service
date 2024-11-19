@@ -33,7 +33,7 @@ To test the service, run the `make run` target.
 env VERSION="|f097e6d|2024-11-19T15:50+11:00" HOST=localhost PORT=8096 \
                 ./run.sh
 INFO     Pairwise sequence alignment - |f097e6d|2024-11-19T15:50+11:00
-INFO     Using path lambda.py
+INFO     Using path service.py
 ...
 INFO:     Started server process [67746]
 INFO:     Waiting for application startup.
@@ -62,21 +62,21 @@ content-type: application/json
 }
 ```
 
-
 ## Implementation <a name="implementation"></a>
 
 This service is a thin wrapper over BioPython's `Align.PairwiseAligner`.
 
-* [lambda.py](#lambda.py)
+* [service.py](#service.py)
+* [ivcap.py](#ivcap.py)
 * [utils.py](#utils.py)
 * [Dockerfile](#dockerfile)
 
 
-### [lambda.py](.lambda.py]) <a name="lambda.py"></a>
+### [service.py](.service.py]) <a name="service.py"></a>
 
 For the service itself we are using [fastAPI](https://fastapi.tiangolo.com/).
 
-The code in [lambda.py](lambda.py) falls into the following parts:
+The code in [service.py](service.py) falls into the following parts:
 
 #### Import packages
 
@@ -146,20 +146,6 @@ class Response(SchemaModel):
 > Please note that we define a `SCHEMA` class var for every dataclass to be used in the
 JSON schema we will need when registering this service with IVCAP
 
-#### Defining the IVCAP service definition
-
-The following instance doe not necessarily be defined in the service file as it is only
-being used when registering hte service with IVCAP. However, for simplicity
-```
-Service = IVCAPService(
-    name=title,
-    description=description,
-    controller=IVCAPRestService(
-        request=Request,
-        response=Response,
-    ),
-)
-```
 
 #### The main entry point
 
@@ -184,6 +170,26 @@ def healtz():
 
 To test the service, first run `make install` (ideally within a `venv` or `conda` environment) beforehand to install the necessary dependencies. Then `make run` will start the service listing on [http://0.0.0.0:8080](http://0.0.0.0:8080).
 
+### [ivcap.py](./ivcap.py) <a name="ivcap.py"></a>
+
+To register a service with IVCAP we need to provide a service description. This file
+takes advantage of the dataclasses defined in [service.py](./service.py) as well
+as the utility functions defined in [utils.py](./utils.py) to simplify this process.
+
+```
+Service = IVCAPService(
+    name=title,
+    description=description,
+    controller=IVCAPRestService(
+        request=Request,
+        response=Response,
+    ),
+)
+```
+
+Executing `python ivcap.py` or `make print-ivcap-service-description` will print out the
+service description.
+
 ### [utils.py](./utils.py) <a name="utils.py"></a>
 
 This file contains a few helper functions and classes which hopefully helps
@@ -207,8 +213,8 @@ docker run -it \
                 --rm \
                 pairwise_sequence_alignment:latest
 INFO     Pairwise sequence alignment - |f097e6d|2024-11-19T14:59+11:00
-INFO     Using path lambda.py
-INFO     Resolved absolute path /app/lambda.py
+INFO     Using path service.py
+INFO     Resolved absolute path /app/service.py
 ...
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.

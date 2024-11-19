@@ -6,7 +6,7 @@ COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
 # Get service files
-ADD lambda.py utils.py run.sh ./
+ADD service.py utils.py run.sh ./
 
 # VERSION INFORMATION
 ARG VERSION ???

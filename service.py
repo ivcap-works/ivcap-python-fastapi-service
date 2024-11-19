@@ -62,15 +62,6 @@ class Response(SchemaModel):
     alignments: List[List[List[List[int]]]] = Field(description="a list of alignments")
     score: float = Field(description="Overall score of the alignemnt?")
 
-Service = IVCAPService(
-    name=title,
-    description=description,
-    controller=IVCAPRestService(
-        request=Request,
-        response=Response,
-    ),
-)
-
 @app.post("/")
 def root(req: Request) -> Response:
     p = req.model_dump(exclude=["target", "query", "aspect_schema"])
@@ -79,10 +70,6 @@ def root(req: Request) -> Response:
     alignments=[a.aligned.tolist() for a in r]
     res = Response(target=req.target, query=req.query, alignments=alignments, score=r.score)
     return res
-
-@app.get("/ivcap_service_description")
-def schema() -> IVCAPService:
-    return Service
 
 # Allows platform to check if everything is OK
 @app.get("/_healtz")
