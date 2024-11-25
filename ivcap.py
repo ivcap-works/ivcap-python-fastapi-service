@@ -8,7 +8,10 @@ Service = IVCAPService(
     controller=IVCAPRestService(
         request=Request,
         response=Response,
+        command=["./run.sh"],
+        port=8080,
+        readyPath="/_healtz",
     ),
 )
 
-print(Service.model_dump_json(indent=2))
+print(Service.model_dump_json(by_alias=True, indent=2))

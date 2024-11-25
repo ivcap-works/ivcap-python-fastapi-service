@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import ClassVar, TypeVar, Type as TypeT
+from typing import ClassVar, List, TypeVar, Type as TypeT
 from pydantic import BaseModel, Field, TypeAdapter, field_serializer, model_validator
 
 class StrEnum(str, Enum):
@@ -7,7 +7,7 @@ class StrEnum(str, Enum):
         return str.__repr__(self.value)
 
 class SchemaModel(BaseModel):
-    aspect_schema: str = Field(None, serialization_alias="$schema", alias="$schema")
+    aspect_schema: str = Field(None, alias="$schema")
 
     @classmethod
     def json_schema(cls, *, json_schema="https://json-schema.org/draft/2020-12/schema"):
@@ -36,10 +36,15 @@ U = TypeVar('U', bound=SchemaModel)
 
 class IVCAPRestService(SchemaModel):
     SCHEMA: ClassVar[str] = "urn:ivcap:schema.service.rest.1"
-    request: TypeT[T] = Field(description="dataclass describing shape of request")
-    response: TypeT[U] = Field(description="dataclass describing shape of response")
 
     package_urn: str = Field("#PACKAGE_URN#", description="IVCAP package implementing this service")
+    command: List[str] = Field(description="list of comand and paramters to start the service inside the container")
+    port: int = Field(80, description="port this service is listening on")
+    readyPath: str = Field(description="GET path of the service to use for verifying if the service is up and ready",
+                           serialization_alias="ready_path")
+
+    request: TypeT[T] = Field(description="dataclass describing shape of request")
+    response: TypeT[U] = Field(description="dataclass describing shape of response")
 
     @field_serializer("request", return_type=dict)
     @staticmethod

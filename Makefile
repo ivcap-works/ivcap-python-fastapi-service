@@ -96,19 +96,20 @@ docker-publish-common:
 	fi
 	@echo ">> Successfully published '${DOCKER_TAG}' as '${SERVICE_IMG}'"
 
-# service-register: docker-publish
-# 	$(eval image:=$(shell ivcap package list ${DOCKER_TAG}))
-# 	cat ${PROJECT_DIR}/service.json \
-# 	| sed 's|#DOCKER_TAG#|${image}|' \
-# 	| sed 's|#SERVICE_ID#|${SERVICE_ID}|' \
-#   | ivcap aspect update ${SERVICE_ID} -f - --timeout 600
+service-register: # docker-publish
+	$(eval image:=$(shell ivcap package list ${DOCKER_TAG}))
+	python ivcap.py \
+	| sed 's|#PACKAGE_URN#|${image}|' \
+	| sed 's|#SERVICE_ID#|${SERVICE_ID}|' \
+	| ivcap aspect update ${SERVICE_ID} -f - --timeout 600
 
-service-register:
+service-register-x:
 	$(eval image:=$(shell ivcap package list ${DOCKER_TAG}))
 	cat ${PROJECT_DIR}/service.json \
 	| sed 's|#DOCKER_TAG#|${image}|' \
 	| sed 's|#SERVICE_ID#|${SERVICE_ID}|' \
-  | ivcap aspect update ${SERVICE_ID} --policy urn:ivcap:policy:ivcap.open.metadata -f - --timeout 600
+  | ivcap aspect update ${SERVICE_ID} \
+		--policy urn:ivcap:policy:ivcap.open.metadata -f - --timeout 600
 
 clean:
 	rm -rf ${PROJECT_DIR}/$(shell echo ${SERVICE_FILE} | cut -d. -f1 ).dist

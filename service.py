@@ -6,7 +6,7 @@ import sys
 import os
 from Bio import Align
 
-from utils import IVCAPRestService, IVCAPService, SchemaModel, StrEnum
+from utils import SchemaModel, StrEnum
 
 # shutdown pod cracefully
 signal(SIGTERM, lambda _1, _2: sys.exit(0))
