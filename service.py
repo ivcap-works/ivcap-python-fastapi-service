@@ -39,7 +39,7 @@ app = FastAPI(
         "name": "Biopython",
         "url": "https://github.com/biopython/biopython/blob/master/LICENSE.rst",
     },
-    docs_url="/api", # ONLY set when there is no default GET
+    docs_url="/docs", # ONLY set when there is no default GET
 )
 
 class ModeE(StrEnum):
