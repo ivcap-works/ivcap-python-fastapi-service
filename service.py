@@ -12,7 +12,7 @@ from utils import IVCAPRestService, IVCAPService, SchemaModel, StrEnum
 signal(SIGTERM, lambda _1, _2: sys.exit(0))
 
 title = "Pairwise sequence alignment"
-summary = "Aligs two sequences to each other by optimizing the similarity score between them.",
+summary = "Aligs two sequences to each other by optimizing the similarity score between them."
 description = """
 Pairwise sequence alignment
 
@@ -39,7 +39,7 @@ app = FastAPI(
         "name": "Biopython",
         "url": "https://github.com/biopython/biopython/blob/master/LICENSE.rst",
     },
-    docs_url="/api", # ONLY set when there is no default GET
+    docs_url="/docs", # ONLY set when there is no default GET
 )
 
 class ModeE(StrEnum):
@@ -49,16 +49,16 @@ class ModeE(StrEnum):
 
 class Request(SchemaModel):
     SCHEMA: ClassVar[str] = "urn:sd.test:schema.fastapi-test.request.1"
-    target: str = Field(description="The target sequence as a string", examples="GAACT")
-    query: str = Field(description="The sequence to align as a string", examples="GAT")
+    target: str = Field(description="The target sequence as a string", examples=["GAACT"])
+    query: str = Field(description="The sequence to align as a string", examples=["GAT"])
     mode: ModeE = Field(ModeE.Local, description="Some decription on what a 'mode' means")
     match_score: float = Field(1.000000, description="Some decription on what a 'match_score' means")
     mismatch_score: float = Field(0.000000, description="Some decription on what a 'mismatch_score' means")
 
 class Response(SchemaModel):
     SCHEMA: ClassVar[str] = "urn:sd.test:schema.fastapi-test.response.1"
-    target: str = Field(description="The target sequence as a string", examples="GAACT")
-    query: str = Field(description="The sequence to align as a string", examples="GAT")
+    target: str = Field(description="The target sequence as a string", examples=["GAACT"])
+    query: str = Field(description="The sequence to align as a string", examples=["GAT"])
     alignments: List[List[List[List[int]]]] = Field(description="a list of alignments")
     score: float = Field(description="Overall score of the alignemnt?")
 
