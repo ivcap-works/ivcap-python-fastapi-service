@@ -8,7 +8,8 @@ Service = IVCAPService(
     controller=IVCAPRestService(
         request=Request,
         response=Response,
-        command=["./run.sh"],
+        path="/delayed",
+        command=["python",  "service.py"],
         port=8080,
         readyPath="/_healtz",
     ),

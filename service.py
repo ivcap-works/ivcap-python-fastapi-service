@@ -52,8 +52,9 @@ from json_rpc import use_json_rpc_middleware
 use_json_rpc_middleware(app)
 
 parser = argparse.ArgumentParser(description=title)
-parser.add_argument('--host', type=str, default='127.0.0.1', help='Host address')
-parser.add_argument('--port', type=int, default=8000, help='Port number')
+parser.add_argument('--host', type=str, default=os.environ.get("HOST", "localhost"), help='Host address')
+parser.add_argument('--port', type=int, default=os.environ.get("PORT", "8080"), help='Port number')
+
 parser.add_argument('--delay', type=int, default=5, help='Run in async mode, pretending that processing takes this many seconds')
 
 args = parser.parse_args()
