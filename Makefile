@@ -25,10 +25,6 @@ SERVICE_URL=http://${HOST}:${PORT}
 DELAY=10
 
 run:
-	env VERSION=$(VERSION) HOST=${HOST} PORT=${PORT} \
-		${PROJECT_DIR}/run.sh
-
-run2:
 	env VERSION=$(VERSION) \
 	python service.py --host ${HOST} --port ${PORT} --delay ${DELAY}
 

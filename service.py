@@ -108,7 +108,7 @@ use_try_later_middleware(app)
 jobs = {}
 
 @app.post("/delayed")
-def immediate(req: Request) -> Response:
+def delayed(req: Request) -> Response:
     jobID = ''.join(random.choice(string.ascii_letters) for i in range(10))
     jobs[jobID] = req
     raise TryLaterException(f"/{jobID}", delay)
