@@ -1,9 +1,14 @@
+from time import sleep
 from typing import ClassVar, List
 from fastapi import FastAPI
 from pydantic import Field
+import argparse
 from signal import signal, SIGTERM
 import sys
 import os
+import random
+import string
+
 from Bio import Align
 
 from utils import SchemaModel, StrEnum
@@ -42,6 +47,18 @@ app = FastAPI(
     docs_url="/api", # ONLY set when there is no default GET
 )
 
+# Add support for JSON-RPC invocation (https://www.jsonrpc.org/)
+from json_rpc import use_json_rpc_middleware
+use_json_rpc_middleware(app)
+
+parser = argparse.ArgumentParser(description=title)
+parser.add_argument('--host', type=str, default='127.0.0.1', help='Host address')
+parser.add_argument('--port', type=int, default=8000, help='Port number')
+parser.add_argument('--delay', type=int, default=5, help='Run in async mode, pretending that processing takes this many seconds')
+
+args = parser.parse_args()
+delay = args.delay
+
 class ModeE(StrEnum):
     Global = "global"
     Local = "local"
@@ -62,16 +79,61 @@ class Response(SchemaModel):
     alignments: List[List[List[List[int]]]] = Field(description="a list of alignments")
     score: float = Field(description="Overall score of the alignemnt?")
 
-@app.post("/")
-def root(req: Request) -> Response:
+def work(req: Request) -> Response:
     p = req.model_dump(exclude=["target", "query", "aspect_schema"])
     aligner = Align.PairwiseAligner(**p)
     r = aligner.align(req.target, req.query)
     alignments=[a.aligned.tolist() for a in r]
-    res = Response(target=req.target, query=req.query, alignments=alignments, score=r.score)
-    return res
+    return Response(target=req.target, query=req.query, alignments=alignments, score=r.score)
+
+#####
+# Calculate alingment and return result  immedaitely
+
+@app.post("/immediate")
+def immediate(req: Request) -> Response:
+    return work(req)
+
+@app.post("/test")
+def testf(req: dict) -> str:
+    return req.get("method")
+
+#####
+# Simulate dispatched calculation by immediately returning
+# a reference to a different "Location" to later pick up the
+# result
+
+from try_later import TryLaterException, use_try_later_middleware
+use_try_later_middleware(app)
+
+jobs = {}
+
+@app.post("/delayed")
+def immediate(req: Request) -> Response:
+    jobID = ''.join(random.choice(string.ascii_letters) for i in range(10))
+    jobs[jobID] = req
+    raise TryLaterException(f"/{jobID}", delay)
+
+@app.get("/{jobID}")
+def get_job(jobID: str) -> Response:
+    req = jobs[jobID]
+    return work(req)
+
+#####
+# Simulate a long running calculation.
+
+@app.post("/long")
+def immediate(req: Request) -> Response:
+    sleep(delay)
+    return work(req)
+
 
 # Allows platform to check if everything is OK
 @app.get("/_healtz")
 def healtz():
     return {"version": os.environ.get("VERSION", "???")}
+
+if __name__ == "__main__":
+    import uvicorn
+    print(f"INFO:     {title} - {os.getenv('VERSION')}")
+    if delay > 0: print(f"INFO:     Operating with artifical delay of {delay} sec")
+    uvicorn.run(app, host=args.host, port=args.port)

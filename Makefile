@@ -22,13 +22,27 @@ TARGET_PLATFORM := linux/amd64
 HOST=localhost
 PORT=8096
 SERVICE_URL=http://${HOST}:${PORT}
+DELAY=10
 
 run:
 	env VERSION=$(VERSION) HOST=${HOST} PORT=${PORT} \
 		${PROJECT_DIR}/run.sh
 
-submit-request:
-	curl -i -X POST -H "Content-Type: application/json" -d @${PROJECT_DIR}/example-req.json ${SERVICE_URL}
+run2:
+	env VERSION=$(VERSION) \
+	python service.py --host ${HOST} --port ${PORT} --delay ${DELAY}
+
+submit-immediate:
+	curl -i -X POST -H "Content-Type: application/json" -d @${PROJECT_DIR}/example-req.json ${SERVICE_URL}/immediate
+
+submit-delayed:
+	curl -i -X POST -H "Content-Type: application/json" -d @${PROJECT_DIR}/example-req.json ${SERVICE_URL}/delayed
+
+submit-rpc:
+	curl -i -X POST -H "Content-Type: application/json" -d @${PROJECT_DIR}/example-rpc.json ${SERVICE_URL}
+
+submit-long:
+	curl -i -X POST -H "Content-Type: application/json" -d @${PROJECT_DIR}/example-req.json ${SERVICE_URL}/long
 
 print-ivcap-service-description:
 	python ivcap.py

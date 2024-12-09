@@ -1,0 +1,11 @@
+{
+  "$schema": "https://www.jsonrpc.org",
+  "jsonrpc": "2.0",
+  "method": "immediate",
+  "params": {
+    "$schema": "urn:sd.test:schema.fastapi-test.request.1",
+    "target": "GAAT",
+    "query": "GAT"
+  },
+  "id": 1
+}
