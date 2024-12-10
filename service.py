@@ -112,9 +112,9 @@ jobs = {}
 def delayed(req: Request) -> Response:
     jobID = ''.join(random.choice(string.ascii_letters) for i in range(10))
     jobs[jobID] = req
-    raise TryLaterException(f"/{jobID}", delay)
+    raise TryLaterException(f"/jobs/{jobID}", delay)
 
-@app.get("/{jobID}")
+@app.get("/jobs/{jobID}")
 def get_job(jobID: str) -> Response:
     req = jobs[jobID]
     return work(req)
