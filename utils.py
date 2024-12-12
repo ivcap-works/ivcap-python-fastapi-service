@@ -40,6 +40,7 @@ class IVCAPRestService(SchemaModel):
     package_urn: str = Field("#PACKAGE_URN#", description="IVCAP package implementing this service")
     command: List[str] = Field(description="list of comand and paramters to start the service inside the container")
     port: int = Field(80, description="port this service is listening on")
+    path: str = Field("/", description="Service local path to service implementation")
     readyPath: str = Field(description="GET path of the service to use for verifying if the service is up and ready",
                            serialization_alias="ready_path")
 

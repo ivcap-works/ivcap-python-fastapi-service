@@ -1,2 +1,3 @@
 fastapi[standard] >= 0.111.1
 biopython
+git+https://github.com/ivcap-works/ivcap-fastapi.git@main

@@ -48,7 +48,7 @@ app = FastAPI(
 )
 
 # Add support for JSON-RPC invocation (https://www.jsonrpc.org/)
-from json_rpc import use_json_rpc_middleware
+from ivcap_fastapi import use_json_rpc_middleware
 use_json_rpc_middleware(app)
 
 parser = argparse.ArgumentParser(description=title)
@@ -103,7 +103,7 @@ def testf(req: dict) -> str:
 # a reference to a different "Location" to later pick up the
 # result
 
-from try_later import TryLaterException, use_try_later_middleware
+from ivcap_fastapi import TryLaterException, use_try_later_middleware
 use_try_later_middleware(app)
 
 jobs = {}
